@@ -42,7 +42,7 @@ function questions() {
     ]).then(function(answers) {
         var quantityInput = answers.quantity;
         var idInput = answers.id;
-        purchase(idInput, quantityInput);
+        purchase(idInput, parseInt(quantityInput));
 
 
 
@@ -51,25 +51,23 @@ function questions() {
 
 function purchase(id, quantityInput) {
 
-    connection.query('SELECT * From products WHERE id = ' + id, function(error, response) {
-        if (error) { console.log(error) };
+    // connection.query('SELECT * From products WHERE id = ' + id, function(error, response) {
+    //     if (error) { console.log(error) };
+    //     console.log(quantityInput <= response[0].stock_quantity);
+    //     if (quantityInput <= response[0].stock_quantity) {
 
-        if (quantityInput <= response[0].stock_quantity) {
+    //         var totalCost = response[0].price * quantityInput;
+    var quantityInputNumber = parseInt(quantityInput);
+    // console.log("\n We have those. I'll send your order right away!");
+    // console.log("Your total will be " + quantityInput + " " + response[0].product_name + " is $" + totalCost + "Thank-You for your business! \n");
+    var query = connection.query('UPDATE products SET stock_quantity = stock_quantity - ? WHERE id = ?', [quantityInputNumber, parseInt(id)], function(err, res) { console.log("it ran") });
+    process.exit()
+        //     } else {
+        //         console.log("Were  sorry. We dont have enough of those in stock." + response[0].product_name + "Please feel free to try us again later! \n ");
 
-            var totalCost = response[0].price * quantityInput;
+    //         process.exit()
+    //     };
 
-            console.log("\n We have those. I'll send your order right away!");
-            console.log("Your total will be " + quantityInput + " " + response[0].product_name + " is $" + totalCost + "Thank-You for your business! \n");
-            console.log("before query---------------------", quantityInput, id)
-            connection.query('UPDATE products SET stock_quantity = stock_quantity - ' + quantityInput + ' WHERE id = ' + id);
-
-            process.exit()
-        } else {
-            console.log("Were  sorry. We dont have enough of those in stock." + response[0].product_name + "Please feel free to try us again later! \n ");
-
-            process.exit()
-        };
-
-    });
+    // });
 
 };
